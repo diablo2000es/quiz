@@ -28,3 +28,11 @@ nav span {
 a {
   color: #00B7FF;
 }
+img {
+    width: 6em;
+    
+}
+span {
+    color: blue;
+    font-size: 1em;
+}

@@ -17,3 +17,10 @@ exports.answer = function (req, res){
         res.render("quizes/answers", {respuesta: "Incorrecto"});
     }
 };
+
+exports.author = function (req, res){
+
+        res.render("quizes/author");
+        
+   
+};
