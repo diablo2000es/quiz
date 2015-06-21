@@ -1,8 +1,14 @@
+var models = require("../models/models.js");
+
 // get /quizes/question
 
 exports.question = function(req,res){
     //console.log("render");
-    res.render("quizes/question", {pregunta: "Capital de Italia"});
+    //res.render("quizes/question", {pregunta: "Capital de Italia"});
+    models.Quiz.findAll().success(function(quiz){
+       res.render("quizes/question", {pregunta: quiz[0].pregunta})
+    })
+
 }
 
 
@@ -10,12 +16,16 @@ exports.question = function(req,res){
 
 
 exports.answer = function (req, res){
-    if (req.query.respuesta === "Roma"){
+    models.Quiz.findAll().success(function(quiz){
+        if (req.query.respuesta === quiz[0].respuesta){
         res.render("quizes/answers", {respuesta: "Correcto"});
         
     } else {
         res.render("quizes/answers", {respuesta: "Incorrecto"});
     }
+
+    })
+
 };
 
 exports.author = function (req, res){
