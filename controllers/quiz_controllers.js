@@ -48,14 +48,28 @@ exports.answer = function (req, res){
 
 
 exports.index = function(req,res) {
+    if (req.query.search){
+        var buscar = "%"+req.query.search+"%";
+        var re = (/\s/g);
+
+        buscar = buscar.replace(re, "%");
+        
+        models.Quiz.findAll({where: ["pregunta like ?", buscar]}).then(function(quizes){
+        res.render("quizes/index.ejs", {quizes:quizes});
+    }).catch(function(error){next(error);})
+                    
+        console.log(buscar);
+    }else{
     models.Quiz.findAll().then(function(quizes){
         res.render("quizes/index.ejs", {quizes:quizes});
     }).catch(function(error){next(error);})
 };
-
+};
 exports.author = function (req, res){
 
         res.render("quizes/author");
         
    
 };
+
+
