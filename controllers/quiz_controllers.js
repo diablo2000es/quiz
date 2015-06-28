@@ -44,7 +44,13 @@ exports.answer = function (req, res){
                    {quiz: req.quiz, respuesta: resultado});
 
     };
-
+//quizes/new
+exports.new = function(req,res){
+    var quiz = models.Quiz.build( //Crea objeto quiz
+        {pregunta: "Pregunta", respuesta: "Respuesta"}
+    );
+    res.render("quizes/new", {quiz: quiz});
+}
 
 
 exports.index = function(req,res) {
@@ -65,6 +71,16 @@ exports.index = function(req,res) {
     }).catch(function(error){next(error);})
 };
 };
+//post /quizes/create
+exports.create = function(req, res) {
+    var quiz = models.Quiz.build( req.body.quiz);
+    //Guenada en la Bd los campos de pregunta y repuesta
+    quiz.save({fields: ["pregunta", "respueta"]}).then(function(){
+        res.redirect("/quizes");
+    })// redureciona htto a la lista de preguntas
+
+}
+
 exports.author = function (req, res){
 
         res.render("quizes/author");
