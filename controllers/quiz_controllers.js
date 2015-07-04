@@ -25,7 +25,7 @@ exports.show = function(req,res){
     //})
     //models.Quiz.find(req.params.quizId).then(function(quiz){
         //console.log(quiz);
-        res.render("quizes/show", {quiz: req.quiz});
+        res.render("quizes/show", {quiz: req.quiz, errors: []});
     };
 
 
@@ -41,7 +41,7 @@ exports.answer = function (req, res){
             resultado = "Correcto";
         };
         res.render("quizes/answers.ejs",
-                   {quiz: req.quiz, respuesta: resultado});
+                   {quiz: req.quiz, respuesta: resultado, errors: []});
 
     };
 //quizes/new
@@ -49,7 +49,7 @@ exports.new = function(req,res){
     var quiz = models.Quiz.build( //Crea objeto quiz
         {pregunta: "Pregunta", respuesta: "Respuesta"}
     );
-    res.render("quizes/new", {quiz: quiz});
+    res.render("quizes/new", {quiz: quiz, errors: []});
 }
 
 
@@ -61,29 +61,41 @@ exports.index = function(req,res) {
         buscar = buscar.replace(re, "%");
         
         models.Quiz.findAll({where: ["pregunta like ?", buscar]}).then(function(quizes){
-        res.render("quizes/index.ejs", {quizes:quizes});
+        res.render("quizes/index.ejs", {quizes:quizes, errors: []});
     }).catch(function(error){next(error);})
                     
         console.log(buscar);
     }else{
     models.Quiz.findAll().then(function(quizes){
-        res.render("quizes/index.ejs", {quizes:quizes});
+        res.render("quizes/index.ejs", {quizes:quizes, errors: []});
     }).catch(function(error){next(error);})
 };
 };
 //post /quizes/create
 exports.create = function(req, res) {
-    var quiz = models.Quiz.build( req.body.quiz);
-    //Guenada en la Bd los campos de pregunta y repuesta
+var quiz = models.Quiz.build( req.body.quiz );
+
+var errors = quiz.validate();//ya qe el objeto errors no tiene then(
+if (errors)
+{
+var i=0; var errores=new Array();//se convierte en [] con la propiedad message por compatibilida con layout
+for (var prop in errors) errores[i++]={message: errors[prop]};
+res.render('quizes/new', {quiz: quiz, errors: errores});
+} else {
+        //Guenada en la Bd los campos de pregunta y repuesta
     quiz.save({fields: ["pregunta", "respueta"]}).then(function(){
         res.redirect("/quizes");
     })// redureciona htto a la lista de preguntas
+
+    }
+
+
 
 }
 
 exports.author = function (req, res){
 
-        res.render("quizes/author");
+        res.render("quizes/author", {errors: []});
         
    
 };
