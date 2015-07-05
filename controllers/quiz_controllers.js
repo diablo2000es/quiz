@@ -12,7 +12,12 @@ exports.load = function(req, res, next, quizId){
     ).catch(function(error){next(error);});
 }
 
-
+//DELETE /quizes/:id
+exports.destroy = function (req, res){
+    req.quiz.destroy().then(function(){
+        res.redirect("/quizes");
+    }).catch(function(error){next(error)});
+};
 
 
 // get /quizes/:id
