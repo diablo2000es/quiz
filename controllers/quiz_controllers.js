@@ -93,6 +93,44 @@ res.render('quizes/new', {quiz: quiz, errors: errores});
 
 }
 
+//Get /quizes/:id/edit
+exports.edit = function (req, res ){
+    var quiz = req.quiz; //autoload de instancia de quiz
+    res.render("quizes/edit", {quiz: quiz, errors: []});
+};
+
+////////////////////////////////////////7
+//put /quizes/:id
+exports.update = function (req, res){
+    req.quiz.pregunta = req.body.quiz.pregunta;
+    req.quiz.respuesta = req.body.quiz.respuesta;
+
+    var errores = req.quiz.validate();
+    console.log(errores);
+    if (errores ){
+            var i= 0;
+            var lista_errores = new Array();
+            for (propiedades in errores){
+                lista_errores[i++]= {message: errores[propiedades]};
+                //console.log("Popiedades for "+ propiedades);
+            }
+            //console.log("ERRores lista: "+ errores[0]+"\n"+"propiedades_: "+ lista_errores[0].message );
+            res.render("quizes/edit", {quiz: req.quiz, errors: lista_errores});
+        }
+     else {
+
+            console.log(req.quiz);
+            req.quiz //guardar campos de pregunta y respuesta en BD
+            .save( {fields: ["pregunta", "respuesta"]})
+            .then( function(){ res.redirect("/quizes");});
+        } //Redireciona HTTP a la lista de preguntas
+    };
+
+
+
+
+
+
 exports.author = function (req, res){
 
         res.render("quizes/author", {errors: []});
