@@ -11,10 +11,31 @@ var sequelize = new Sequelize(null,null,null,
 console.log("sequelize")
 var Quiz = sequelize.import(path.join(__dirname, "quiz"));
 exports.Quiz =Quiz; //Exporta la definion de talba Quiz
+
+//importar definicion de la tabla
+
+var comment_path = path.join(__dirname, 'comment');
+var Comment = sequelize.import(comment_path);
+
+Comment.belongsTo(Quiz);
+Quiz.hasMany(Comment);
+
+
+exports.Comment = Comment;
+
+
+
+
+
+
 //sequelize.sync() crea e inicoa la tabla de eguntas en la base de datos
-sequelize.sync().success(function(){
-    //success ejecuta el manejado cuando se crea la tabla
-    Quiz.count().success(function(count){
+
+
+
+
+sequelize.sync().then(function(){
+    //success  cambiado por then para q funciona seuqlize 3.0 ejecuta el manejado cuando se crea la tabla
+    Quiz.count().then(function(count){
         if(count===0){
         Quiz.create({
             pregunta: "Capital de Italia",
@@ -30,6 +51,7 @@ sequelize.sync().success(function(){
     };
     });
 });
+
 
 
 
