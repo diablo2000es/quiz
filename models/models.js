@@ -29,17 +29,11 @@ exports.Comment = Comment;
 
 
 //sequelize.sync() crea e inicoa la tabla de eguntas en la base de datos
-<<<<<<< HEAD
+
 sequelize.sync().then(function(){
     //success ejecuta el manejado cuando se crea la tabla
     Quiz.count().success(function(count){
-=======
 
-
-
-
-
->>>>>>> comentario
         if(count===0){
         Quiz.create({
             pregunta: "Capital de Italia",
