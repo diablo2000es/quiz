@@ -83,19 +83,33 @@ exports.index = function(req,res) {
 exports.create = function(req, res) {
 var quiz = models.Quiz.build( req.body.quiz );
 
-var errors = quiz.validate();//ya qe el objeto errors no tiene then(
-if (errors)
-{
-var i=0; var errores=new Array();//se convierte en [] con la propiedad message por compatibilida con layout
-for (var prop in errors) errores[i++]={message: errors[prop]};
-res.render('quizes/new', {quiz: quiz, errors: errores});
-} else {
-        //Guenada en la Bd los campos de pregunta y repuesta
-    quiz.save({fields: ["pregunta", "respueta", "tema"]}).then(function(){
-        res.redirect("/quizes");
-    })// redureciona htto a la lista de preguntas
+    quiz
+    .validate()
+    .then(
+        function(err){
+            if (err){
+            res.render("quizes/new", {quiz: req.quiz, errors: err.errors});
+            } else {
+                quiz
+                .save( {fields: ["pregunta", "respuesta","tema"]})
+                .then(function(){ res.redirect("/quizes");});
+            }
+        }
+    );
 
-    }
+//var errors = quiz.validate();//ya qe el objeto errors no tiene then(
+//if (errors)
+//{
+//var i=0; var errores=new Array();//se convierte en [] con la propiedad message por compatibilida con layout
+//for (var prop in errors) errores[i++]={message: errors[prop]};
+//res.render('quizes/new', {quiz: quiz, errors: errores});
+//} else {
+//        //Guenada en la Bd los campos de pregunta y repuesta
+//    quiz.save({fields: ["pregunta", "respueta", "tema"]}).then(function(){
+//        res.redirect("/quizes");
+//    })// redureciona htto a la lista de preguntas
+//
+//    }
 
 
 
@@ -114,25 +128,39 @@ exports.update = function (req, res){
     req.quiz.respuesta = req.body.quiz.respuesta;
     req.quiz.tema = req.body.quiz.tema;
 
-    var errores = req.quiz.validate();
-    console.log(errores);
-    if (errores ){
-            var i= 0;
-            var lista_errores = new Array();
-            for (propiedades in errores){
-                lista_errores[i++]= {message: errores[propiedades]};
-                //console.log("Popiedades for "+ propiedades);
+    req.quiz
+    .validate()
+    .then(
+        function(err){
+            if (err){
+            res.render("quizes/edit", {quiz: req.quiz, errors: err.errors});
+            } else {
+                req.quiz
+                .save( {fields: ["pregunta", "respuesta","tema"]})
+                .then(function(){ res.redirect("/quizes");});
             }
-            //console.log("ERRores lista: "+ errores[0]+"\n"+"propiedades_: "+ lista_errores[0].message );
-            res.render("quizes/edit", {quiz: req.quiz, errors: lista_errores});
         }
-     else {
+    )
 
-            console.log(req.quiz);
-            req.quiz //guardar campos de pregunta y respuesta en BD
-            .save( {fields: ["pregunta", "respuesta","tema"]})
-            .then( function(){ res.redirect("/quizes");});
-        } //Redireciona HTTP a la lista de preguntas
+//    var errores = req.quiz.validate();
+//    console.log(errores);
+//    if (errores ){
+//            var i= 0;
+//            var lista_errores = new Array();
+//            for (propiedades in errores){
+//                lista_errores[i++]= {message: errores[propiedades]};
+//                //console.log("Popiedades for "+ propiedades);
+//            }
+//            //console.log("ERRores lista: "+ errores[0]+"\n"+"propiedades_: "+ lista_errores[0].message );
+//            res.render("quizes/edit", {quiz: req.quiz, errors: lista_errores});
+//        }
+//     else {
+//
+//            console.log(req.quiz);
+//            req.quiz //guardar campos de pregunta y respuesta en BD
+//            .save( {fields: ["pregunta", "respuesta","tema"]})
+//            .then( function(){ res.redirect("/quizes");});
+//        } //Redireciona HTTP a la lista de preguntas
     };
 
 
