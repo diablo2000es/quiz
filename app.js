@@ -42,7 +42,28 @@ app.use(function(req, res, next){
     next();
 });
 
+//controlar sesiones dos minutos
+app.use(function(req, res, next){
 
+    var time = new Date();
+    if (req.session.tiempo){
+        if (time.getTime() - req.session.tiempo  > 120000){
+            console.log("Saliendo usurario registrado por limite de tiempo");
+            delete req.session.user;
+            delete req.session.tiempo;
+
+        };
+    };
+
+    if(req.session.user){
+        tiempo_pasado = time.getTime() -req.session.tiempo;
+        req.session.tiempo = time.getTime();
+
+        console.log(req.session.tiempo);
+        console.log("Control de tiempo: "+ tiempo_pasado);
+    };
+    next();
+});
 
 
 app.use('/', routes);
