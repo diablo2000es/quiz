@@ -51,6 +51,7 @@ app.use(function(req, res, next){
             console.log("Saliendo usurario registrado por limite de tiempo");
             delete req.session.user;
             delete req.session.tiempo;
+            res.redirect("/login");
 
         };
     };
